@@ -1,0 +1,19 @@
+#配置服务
+server:
+  port: 9002
+#spring配置
+spring:
+  application:
+    name: ihrm-company  #服务名称
+  #数据库连接池配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ihrm?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 111111
+  #JPA配置
+  jpa:
+    database: mysql
+    show-sql: true
+    open-in-view: true
+
