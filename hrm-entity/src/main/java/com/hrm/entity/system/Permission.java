@@ -47,6 +47,9 @@ public class Permission implements Serializable {
      */
     private String pid;
 
+    /**
+     * 可见性
+     */
     private Integer enVisible;
 
     public Permission(String name, Integer type, String code, String description) {
