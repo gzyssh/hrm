@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -28,6 +29,19 @@ public class RoleController extends BaseController {
 
     @Autowired
     private RoleService roleService;
+
+    /**
+     * 分配权限
+     */
+    @PutMapping(value = "/role/assignPerm")
+    public Result assignRoles(@RequestBody Map<String,Object> map){
+        //获取被分配的角色
+        String roleId = (String) map.get("id");
+        //获取被分配的权限列表
+        List<String> permIds= (List<String>) map.get("permIds");
+        roleService.assignRoles(roleId,permIds);
+        return Result.SUCCESS();
+    }
 
     /**
      * 添加角色

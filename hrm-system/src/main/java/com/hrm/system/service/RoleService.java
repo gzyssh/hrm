@@ -3,7 +3,11 @@ package com.hrm.system.service;
 
 import com.hrm.common.service.BaseService;
 import com.hrm.common.utils.IdWorker;
+import com.hrm.common.utils.PermissionConstants;
+import com.hrm.entity.system.Permission;
 import com.hrm.entity.system.Role;
+import com.hrm.entity.system.User;
+import com.hrm.system.dao.PermissionDao;
 import com.hrm.system.dao.RoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +19,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -34,6 +40,9 @@ public class RoleService extends BaseService {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private PermissionDao permissionDao;
+
     /**
      * 添加角色
      */
@@ -45,11 +54,11 @@ public class RoleService extends BaseService {
      * 更新角色
      */
     public void update(Role role) {
-        //TODO:1.根据id查询角色
+        //1.根据id查询角色
         Role target = roleDao.getOne(role.getId());
         target.setName(role.getName());
         target.setDescription(role.getDescription());
-        //TODO:2.设置角色属性
+        //2.设置角色属性
         roleDao.save(target);
     }
     /**
@@ -87,5 +96,28 @@ public class RoleService extends BaseService {
 
     public List<Role> findAll(String companyId) {
         return roleDao.findAll(getSpec(companyId));
+    }
+
+    /**
+     * 分配权限
+     * @param roleId
+     * @param permIds
+     */
+    public void assignRoles(String roleId, List<String> permIds) {
+        //根据ID查询角色
+        Role role = roleDao.findById(roleId).get();
+        //设置角色的权限集合
+        Set<Permission> perms=new HashSet<>();
+        for (String permId : permIds) {
+            Permission permission = permissionDao.findById(permId).get();
+            //需要根据类型和父ID查询API权限列表
+            List<Permission> apiList = permissionDao.findByTypeAndPid(PermissionConstants.PY_API, permission.getId());
+            perms.addAll(apiList);//自动赋予APi权限
+            perms.add(permission);//当前菜单或按钮的权限
+        }
+        //设置角色和权限集合的关系
+        role.setPermissions(perms);
+        //更新用户
+        roleDao.save(role);
     }
 }
