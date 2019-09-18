@@ -130,4 +130,8 @@ public class UserService extends BaseService {
         //更新用户
         userDao.save(user);
     }
+
+    public User findByMobile(String mobile) {
+        return userDao.findByMobile(mobile);
+    }
 }

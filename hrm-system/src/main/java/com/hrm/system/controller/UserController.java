@@ -5,13 +5,17 @@ import com.hrm.common.controller.BaseController;
 import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
+import com.hrm.common.utils.JwtUtils;
 import com.hrm.entity.system.User;
 import com.hrm.entity.system.response.UserResult;
+import com.hrm.system.dao.UserDao;
 import com.hrm.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +34,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     /**
      * 分配角色
@@ -94,5 +101,28 @@ public class UserController extends BaseController {
         //3.构造返回结果
         PageResult pageResult = new PageResult(pageUser.getTotalElements(),pageUser.getContent());
         return new Result(ResultCode.SUCCESS, pageResult);
+    }
+
+    /**
+     * 用户登录
+     * @param objectMap
+     * @return
+     */
+    @PutMapping(value = "/login")
+    public Result login(@RequestBody Map<String,Object> objectMap){
+        String mobile= (String) objectMap.get("mobile");
+        String password= (String) objectMap.get("password");
+        User user=userService.findByMobile(mobile);
+        //登录失败
+        if(user==null||user.getPassword().equals(password)){
+            return new Result(ResultCode.MOBILEORPASSWORDERROR);
+        }else{
+            //登录成功
+            Map<String,Object> map=new HashMap<>();
+            map.put("companyId",user.getCompanyId());
+            map.put("companyName",user.getCompanyName());
+            String token = jwtUtils.createJwt(user.getId(), user.getUsername(), map);
+            return new Result(ResultCode.SUCCESS,token);
+        }
     }
 }
