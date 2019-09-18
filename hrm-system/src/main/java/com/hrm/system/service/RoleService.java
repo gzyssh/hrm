@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 /**
  * <p>
@@ -44,11 +45,11 @@ public class RoleService extends BaseService {
      * 更新角色
      */
     public void update(Role role) {
-        //1.根据id查询角色
+        //TODO:1.根据id查询角色
         Role target = roleDao.getOne(role.getId());
         target.setName(role.getName());
         target.setDescription(role.getDescription());
-        //2.设置角色属性
+        //TODO:2.设置角色属性
         roleDao.save(target);
     }
     /**
@@ -82,5 +83,9 @@ public class RoleService extends BaseService {
         };
         Page<Role> pageRole = roleDao.findAll(spec, new PageRequest(page-1, size));
         return pageRole;
+    }
+
+    public List<Role> findAll(String companyId) {
+        return roleDao.findAll(getSpec(companyId));
     }
 }

@@ -50,7 +50,7 @@ public class Permission implements Serializable {
     /**
      * 可见性
      */
-    private Integer enVisible;
+    private String enVisible;
 
     public Permission(String name, Integer type, String code, String description) {
         this.name = name;

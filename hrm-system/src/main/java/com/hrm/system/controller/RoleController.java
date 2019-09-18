@@ -5,10 +5,13 @@ import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
 import com.hrm.entity.system.Role;
+import com.hrm.entity.system.response.RoleResult;
 import com.hrm.system.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -57,6 +60,7 @@ public class RoleController extends BaseController {
     @GetMapping(value = "/role/{id}")
     public Result findById(@PathVariable(name = "id") String id){
         Role role = roleService.findById(id);
+        RoleResult roleResult = new RoleResult(role);
         return new Result(ResultCode.SUCCESS,role);
     }
     /**
@@ -69,5 +73,10 @@ public class RoleController extends BaseController {
         //3.构造返回结果
         PageResult pageResult = new PageResult(pageRole.getTotalElements(),pageRole.getContent());
         return new Result(ResultCode.SUCCESS, pageResult);
+    }
+    @RequestMapping(value="/role/list" ,method=RequestMethod.GET)
+    public Result findAll() throws Exception {
+        List<Role> roleList = roleService.findAll(companyId);
+        return new Result(ResultCode.SUCCESS,roleList);
     }
 }

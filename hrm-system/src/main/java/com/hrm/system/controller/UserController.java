@@ -6,6 +6,7 @@ import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
 import com.hrm.entity.system.User;
+import com.hrm.entity.system.response.UserResult;
 import com.hrm.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,7 @@ public class UserController extends BaseController {
     @GetMapping(value = "/user/{id}")
     public Result findById(@PathVariable(name = "id") String id){
         User user = userService.findById(id);
+        UserResult userResult = new UserResult(user);
         return new Result(ResultCode.SUCCESS,user);
     }
     /**
