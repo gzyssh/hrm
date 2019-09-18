@@ -61,7 +61,7 @@ public class RoleController extends BaseController {
     public Result findById(@PathVariable(name = "id") String id){
         Role role = roleService.findById(id);
         RoleResult roleResult = new RoleResult(role);
-        return new Result(ResultCode.SUCCESS,role);
+        return new Result(ResultCode.SUCCESS,roleResult);
     }
     /**
      * 分页查询角色

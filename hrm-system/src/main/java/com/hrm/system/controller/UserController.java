@@ -65,7 +65,7 @@ public class UserController extends BaseController {
     public Result findById(@PathVariable(name = "id") String id){
         User user = userService.findById(id);
         UserResult userResult = new UserResult(user);
-        return new Result(ResultCode.SUCCESS,user);
+        return new Result(ResultCode.SUCCESS,userResult);
     }
     /**
      * 查询全部用户
