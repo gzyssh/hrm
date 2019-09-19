@@ -48,9 +48,12 @@ public class JwtUtils {
         JwtBuilder builder = Jwts.builder().setId(id)
                 .setSubject(name)
                 .setIssuedAt(new Date())//签发时间
-                .signWith(SignatureAlgorithm.HS256, key)//加密类型+私钥
-                .setClaims(map)//自定义claims
-                .setExpiration(new Date(exp));//失效时间
+                .signWith(SignatureAlgorithm.HS256, key);//加密类型+私钥
+        //自定义claims
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            builder.claim(entry.getKey(),entry.getValue());
+        }
+        builder.setExpiration(new Date(exp));//失效时间
         //创建token
         return builder.compact();
     }

@@ -5,16 +5,19 @@ import com.hrm.common.controller.BaseController;
 import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
+import com.hrm.common.exception.CommonException;
 import com.hrm.common.utils.JwtUtils;
 import com.hrm.entity.system.User;
+import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
-import com.hrm.system.dao.UserDao;
 import com.hrm.system.service.UserService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,5 +127,25 @@ public class UserController extends BaseController {
             String token = jwtUtils.createJwt(user.getId(), user.getUsername(), map);
             return new Result(ResultCode.SUCCESS,token);
         }
+    }
+
+    /**
+     * 登录成功，获取用户信息
+     * @return
+     */
+    @PutMapping(value = "/profile")
+    public Result profile(HttpServletRequest request) throws Exception {
+        //获取请求头信息
+        String authorization = request.getHeader("Authorization");
+        if(StringUtils.isEmpty(authorization)){
+            throw new CommonException(ResultCode.UNAUTHENTICATED);
+        }
+        //替换Bearer+空格
+        String token = authorization.replace("Bearer ", "");
+        //解析token
+        Claims claims = jwtUtils.parseJwt(token);
+        String id = claims.getId();
+        User user = userService.findById(id);
+        return new Result(ResultCode.SUCCESS,new ProfileResult(user));
     }
 }

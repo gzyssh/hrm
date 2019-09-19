@@ -19,5 +19,5 @@ spring:
 #jwt配置
 jwt:
   config:
-    key: hrm
+    key: yz-hrm
     ttl: 3600000
