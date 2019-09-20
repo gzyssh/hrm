@@ -102,6 +102,14 @@ public class User implements Serializable {
      */
     private String departmentName;
 
+    /**
+     * 用户等级
+     * SaasAdmin：SaaS企业管理员
+     * coAdmin:公司管理员
+     * user:普通用户
+     */
+    private String level;
+
 
     @ManyToMany
     @JsonIgnore

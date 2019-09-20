@@ -7,9 +7,11 @@ import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
 import com.hrm.common.exception.CommonException;
 import com.hrm.common.utils.JwtUtils;
+import com.hrm.entity.system.Permission;
 import com.hrm.entity.system.User;
 import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
+import com.hrm.system.service.PermissionService;
 import com.hrm.system.service.UserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -111,13 +116,13 @@ public class UserController extends BaseController {
      * @param objectMap
      * @return
      */
-    @PutMapping(value = "/login")
+    @PostMapping(value = "/login")
     public Result login(@RequestBody Map<String,Object> objectMap){
         String mobile= (String) objectMap.get("mobile");
         String password= (String) objectMap.get("password");
         User user=userService.findByMobile(mobile);
         //登录失败
-        if(user==null||user.getPassword().equals(password)){
+        if(user==null||!user.getPassword().equals(password)){
             return new Result(ResultCode.MOBILEORPASSWORDERROR);
         }else{
             //登录成功
@@ -133,7 +138,7 @@ public class UserController extends BaseController {
      * 登录成功，获取用户信息
      * @return
      */
-    @PutMapping(value = "/profile")
+    @PostMapping(value = "/profile")
     public Result profile(HttpServletRequest request) throws Exception {
         //获取请求头信息
         String authorization = request.getHeader("Authorization");
@@ -146,6 +151,18 @@ public class UserController extends BaseController {
         Claims claims = jwtUtils.parseJwt(token);
         String id = claims.getId();
         User user = userService.findById(id);
-        return new Result(ResultCode.SUCCESS,new ProfileResult(user));
+        //根据不同的用户级别获取用户权限
+        ProfileResult profileResult=null;
+        if("user".equals(user.getLevel())){
+            profileResult=new ProfileResult(user);
+        }else{
+            Map<String,Object> map=new HashMap<>();
+            if("coAdmin".equals(user.getLevel())){
+                map.put("enVisible","1");
+            }
+            List<Permission> list = permissionService.findAll(map);
+            profileResult=new ProfileResult(user,list);
+        }
+        return new Result(ResultCode.SUCCESS,profileResult);
     }
 }
