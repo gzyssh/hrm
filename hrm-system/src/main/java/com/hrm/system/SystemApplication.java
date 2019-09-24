@@ -16,7 +16,7 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
  * @author guozy
  * @create 2019/08/31
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.hrm")
 @EntityScan("com.hrm.entity.system")
 public class SystemApplication {
     public static void main(String[] args) {
