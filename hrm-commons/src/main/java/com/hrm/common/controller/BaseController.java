@@ -27,10 +27,11 @@ public class BaseController {
         Object obj = request.getAttribute("user_claims");
         if(obj!=null){
             this.claims= (Claims) obj;
+            this.companyId=(String) claims.get("companyId");
+            this.companyName=(String) claims.get("companyName");
         }
         this.request=request;
         this.response=response;
-        this.companyId=(String) claims.get("companyId");
-        this.companyName=(String) claims.get("companyName");
+
     }
 }
