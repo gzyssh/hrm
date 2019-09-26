@@ -10,13 +10,16 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-
+/**
+ * 员工离职申请实体类
+ */
 @Entity
 @Table(name = "em_resignation")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeResignation implements Serializable {
+
     private static final long serialVersionUID = 2890789302883962744L;
     /**
      * 员工Id

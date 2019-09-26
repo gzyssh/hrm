@@ -9,17 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
+/**
+ * 员工信息详情实体类
+ */
 @Entity
 @Table(name = "em_user_company_personal")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCompanyPersonal implements Serializable {
+
     private static final long serialVersionUID = -8414369362479539578L;
-    /**
-     * 用户ID
-     */
     @Id
     private String userId;
 

@@ -10,17 +10,17 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-
+/**
+ * 员工转正申请实体类
+ */
 @Entity
 @Table(name = "em_positive")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeePositive implements Serializable {
+
     private static final long serialVersionUID = 2391824518947910773L;
-    /**
-     * 员工ID
-     */
     @Id
     private String userId;
     /**

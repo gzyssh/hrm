@@ -9,17 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-
+/**
+ * 岗位信息实体类
+ */
 @Entity
 @Table(name = "em_user_company_jobs")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCompanyJobs implements Serializable {
+
     private static final long serialVersionUID = 6934846324503387883L;
-    /**
-     * 员工ID
-     */
     @Id
     private String userId;
     /**

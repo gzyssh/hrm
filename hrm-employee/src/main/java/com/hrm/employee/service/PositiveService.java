@@ -7,12 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-/**
- * Created with IDEA
- * Author:xzengsf
- * Date:2018/10/22 15:23
- * Description:
- */
 @Service
 public class PositiveService {
     @Autowired

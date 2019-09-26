@@ -10,17 +10,17 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-
+/**
+ * 员工归档实体类
+ */
 @Entity
 @Table(name = "em_archive")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeArchive implements Serializable {
+
     private static final long serialVersionUID = 5768915936056289957L;
-    /**
-     * ID
-     */
     @Id
     private String id;
     /**

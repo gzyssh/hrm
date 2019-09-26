@@ -19,12 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IDEA
- * Author:xzengsf
- * Date:2018/10/23 11:33
- * Description:
- */
 @Service
 public class ArchiveService extends BaseService {
     @Autowired
