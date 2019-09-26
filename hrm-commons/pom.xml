@@ -21,5 +21,10 @@
             <artifactId>jjwt</artifactId>
             <version>0.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.hrm</groupId>
+            <artifactId>hrm-entity</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

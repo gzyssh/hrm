@@ -7,6 +7,7 @@ import com.hrm.entity.system.Role;
 import com.hrm.entity.system.User;
 import com.hrm.system.dao.RoleDao;
 import com.hrm.system.dao.UserDao;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +46,9 @@ public class UserService extends BaseService {
      */
     public void save(User user) {
         user.setId(String.valueOf(idWorker.nextId()));
-        user.setPassword("123456");//设置初始密码
+        String password = new Md5Hash("123456", user.getMobile(), 3).toString();
+        user.setPassword(password);//设置初始密码
+        user.setLevel("user");//设置用户级别：普通用户
         user.setEnableState(1);
         userDao.save(user);
     }

@@ -6,20 +6,21 @@ import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
 import com.hrm.common.utils.JwtUtils;
-import com.hrm.common.utils.PermissionConstants;
-import com.hrm.entity.system.Permission;
-import com.hrm.entity.system.Role;
 import com.hrm.entity.system.User;
 import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
 import com.hrm.system.service.PermissionService;
 import com.hrm.system.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,28 +120,21 @@ public class UserController extends BaseController {
     public Result login(@RequestBody Map<String,Object> objectMap){
         String mobile= (String) objectMap.get("mobile");
         String password= (String) objectMap.get("password");
-        User user=userService.findByMobile(mobile);
-        //登录失败
-        if(user==null||!user.getPassword().equals(password)){
+        try {
+            //构造登录令牌
+            //加密密码
+            password=new Md5Hash(password,mobile,3).toString();//密码，盐，加密次数
+            UsernamePasswordToken upToken=new UsernamePasswordToken(mobile,password);
+            //获取Subject
+            Subject subject = SecurityUtils.getSubject();
+            //调用login方法，进入realm完成认证
+            subject.login(upToken);
+            //获取sessionID
+            String sessionId = (String) subject.getSession().getId();
+            //构造返回结果
+            return new Result(ResultCode.SUCCESS,sessionId);
+        } catch (Exception e) {
             return new Result(ResultCode.MOBILEORPASSWORDERROR);
-        }else{
-            //登录成功
-            //Api权限字符串
-            StringBuilder sb=new StringBuilder();
-            //获取到可访问的API权限
-            for (Role role : user.getRoles()) {
-                for (Permission permission : role.getPermissions()) {
-                    if(permission.getType()== PermissionConstants.PY_API){
-                        sb.append(permission.getCode()).append(",");
-                    }
-                }
-            }
-            Map<String,Object> map=new HashMap<>();
-            map.put("companyId",user.getCompanyId());
-            map.put("companyName",user.getCompanyName());
-            map.put("apis",sb.toString());//可访问的API权限字符串
-            String token = jwtUtils.createJwt(user.getId(), user.getUsername(), map);
-            return new Result(ResultCode.SUCCESS,token);
         }
     }
 
@@ -150,20 +144,11 @@ public class UserController extends BaseController {
      */
     @PostMapping(value = "/profile")
     public Result profile(HttpServletRequest request) throws Exception {
-        String id = claims.getId();
-        User user = userService.findById(id);
-        //根据不同的用户级别获取用户权限
-        ProfileResult profileResult=null;
-        if("user".equals(user.getLevel())){
-            profileResult=new ProfileResult(user);
-        }else{
-            Map<String,Object> map=new HashMap<>();
-            if("coAdmin".equals(user.getLevel())){
-                map.put("enVisible","1");
-            }
-            List<Permission> list = permissionService.findAll(map);
-            profileResult=new ProfileResult(user,list);
-        }
+        //获取Session中的安全数据
+        Subject subject = SecurityUtils.getSubject();
+        //获取所有的安全数据集合
+        PrincipalCollection principals = subject.getPrincipals();
+        ProfileResult profileResult = (ProfileResult) principals.getPrimaryPrincipal();
         return new Result(ResultCode.SUCCESS,profileResult);
     }
 }
