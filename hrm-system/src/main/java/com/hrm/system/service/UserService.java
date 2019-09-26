@@ -80,6 +80,15 @@ public class UserService extends BaseService {
     public void delete(String id) {
         userDao.deleteById(id);
     }
+
+    /**
+     * 根据公司ID获取员工列表
+     * @param companyId
+     * @return
+     */
+    public List<User> findAll(String companyId) {
+        return userDao.findAll(super.getSpec(companyId));
+    }
     /**
      * 获取用户列表
      * 参数：map集合的形式

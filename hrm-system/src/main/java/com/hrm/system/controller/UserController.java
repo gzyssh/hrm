@@ -7,6 +7,7 @@ import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
 import com.hrm.common.utils.JwtUtils;
 import com.hrm.entity.system.User;
+import com.hrm.entity.system.UserSimpleResult;
 import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
 import com.hrm.system.service.PermissionService;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +90,21 @@ public class UserController extends BaseController {
     public Result delete(@PathVariable(name = "id") String id){
         userService.delete(id);
         return Result.SUCCESS();
+    }
+
+    /**
+     * 根据公司ID获取员工列表
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/user/simple")
+    public Result simple() throws Exception {
+        List<UserSimpleResult> list = new ArrayList<>();
+        List<User> users = userService.findAll(companyId);
+        for (User user : users) {
+            list.add(new UserSimpleResult(user.getId(),user.getUsername()));
+        }
+        return new Result(ResultCode.SUCCESS,list);
     }
     /**
      * 根据id查询

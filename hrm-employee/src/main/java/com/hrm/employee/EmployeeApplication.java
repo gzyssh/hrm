@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(scanBasePackages = "com.hrm")
-@EntityScan("com.hrm.domain.employee")
+@EntityScan("com.hrm.entity.employee")
 public class EmployeeApplication {
 
     public static void main(String[] args) {
