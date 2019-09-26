@@ -12,6 +12,7 @@
         <module>hrm-entity</module>
         <module>hrm-commons</module>
         <module>hrm-system</module>
+        <module>hrm-employee</module>
     </modules>
     <packaging>pom</packaging>
 
