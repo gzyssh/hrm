@@ -28,7 +28,7 @@ public class CustomSessionManager extends DefaultWebSessionManager {
             return super.getSessionId(request, response);
         }else{
             //请求头信息中包含Bearer
-            String id = id.replaceAll("Bearer ", "");
+            id = id.replaceAll("Bearer ", "");
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, "header");
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);
