@@ -53,7 +53,7 @@ public class BaseController {
             //获取安全数据
             ProfileResult profileResult=(ProfileResult) principals.getPrimaryPrincipal();
             this.companyId=profileResult.getCompanyId();
-            this.companyName=profileResult.getMobile();
+            this.companyName=profileResult.getCompany();
         }
         this.request=request;
         this.response=response;

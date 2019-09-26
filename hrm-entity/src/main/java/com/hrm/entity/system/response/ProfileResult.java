@@ -15,13 +15,15 @@ import java.util.*;
 public class ProfileResult implements Serializable , AuthCachePrincipal {
     private String mobile;
     private String username;
+    private String company;
     private String companyId;
     private Map<String,Object> roles = new HashMap<>();
 
     public ProfileResult(User user) {
         this.mobile = user.getMobile();
         this.username = user.getUsername();
-        this.companyId = user.getCompanyName();
+        this.company = user.getCompanyName();
+        this.companyId = user.getCompanyId();
 
         Set<Role> roles = user.getRoles();
         Set<String> menus = new HashSet<>();
@@ -48,7 +50,8 @@ public class ProfileResult implements Serializable , AuthCachePrincipal {
     public ProfileResult(User user, List<Permission> list) {
         this.mobile = user.getMobile();
         this.username = user.getUsername();
-        this.companyId = user.getCompanyName();
+        this.company = user.getCompanyName();
+        this.companyId = user.getCompanyId();
 
         Set<String> menus = new HashSet<>();
         Set<String> points = new HashSet<>();
