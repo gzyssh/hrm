@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ErrorController {
 
     //公共错误跳转
-    @RequestMapping(value="auth-error")
+    @RequestMapping(value="autherror")
     public Result authError(int code) {
         return code ==1?new Result(ResultCode.UNAUTHENTICATED):new Result(ResultCode.UNAUTHORISE);
     }
