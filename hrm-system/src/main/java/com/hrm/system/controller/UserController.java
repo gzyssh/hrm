@@ -13,6 +13,7 @@ import com.hrm.system.service.PermissionService;
 import com.hrm.system.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -82,7 +83,8 @@ public class UserController extends BaseController {
     /**
      * 删除用户
      */
-    @DeleteMapping(value = "/user/{id}",name = "API-USER-DELETE")
+    @RequiresPermissions("API-USER-DELETE")
+    @DeleteMapping(value = "/user/{id}")
     public Result delete(@PathVariable(name = "id") String id){
         userService.delete(id);
         return Result.SUCCESS();
