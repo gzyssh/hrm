@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient("hrm-company")
 public interface DepartmentFeign {
 
-    @GetMapping(value = "/departments/{id}")
+    @GetMapping(value = "/company/departments/{id}")
     Result findById(@PathVariable(name = "id") String id);
 
 }

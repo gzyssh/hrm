@@ -5,12 +5,11 @@ import com.hrm.common.controller.BaseController;
 import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
-import com.hrm.common.utils.JwtUtils;
 import com.hrm.entity.system.User;
 import com.hrm.entity.system.UserSimpleResult;
 import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
-import com.hrm.system.service.PermissionService;
+import com.hrm.system.feign.DepartmentFeign;
 import com.hrm.system.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -44,10 +43,8 @@ public class UserController extends BaseController {
     private UserService userService;
 
     @Autowired
-    private PermissionService permissionService;
+    private DepartmentFeign departmentFeign;
 
-    @Autowired
-    private JwtUtils jwtUtils;
 
     /**
      * 分配角色
@@ -169,5 +166,11 @@ public class UserController extends BaseController {
         PrincipalCollection principals = subject.getPrincipals();
         ProfileResult profileResult = (ProfileResult) principals.getPrimaryPrincipal();
         return new Result(ResultCode.SUCCESS,profileResult);
+    }
+
+    @GetMapping(value = "/test/{id}")
+    public Result test(@PathVariable(name = "id") String id){
+        Result result = departmentFeign.findById(id);
+        return result;
     }
 }
