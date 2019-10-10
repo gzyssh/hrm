@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,6 +53,22 @@ public class UserService extends BaseService {
         user.setEnableState(1);
         userDao.save(user);
     }
+
+
+    @Transactional
+    public void saveAll(List<User> list ,String companyId,String companyName){
+        for (User user : list) {
+            user.setPassword(new Md5Hash("123456",user.getMobile(),3).toString());
+            user.setId(String.valueOf(idWorker.nextId()));
+            user.setCompanyId(companyId);
+            user.setCompanyName(companyName);
+            user.setInServiceStatus(1);
+            user.setEnableState(1);
+            user.setLevel("user");
+            userDao.save(user);
+        }
+    }
+
     /**
      * 更新用户
      */

@@ -1,12 +1,13 @@
 package com.hrm.entity.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Table(name = "bs_user")
 @Getter
 @Setter
+@NoArgsConstructor
 public class User implements Serializable {
     private static final long serialVersionUID = 4297464181093070302L;
     /**
@@ -110,6 +112,14 @@ public class User implements Serializable {
      */
     private String level;
 
+    public User(Object [] values) {
+        this.username = values[1].toString();
+        this.mobile = values[2].toString();
+        this.workNumber = new DecimalFormat("#").format(values[3]).toString();
+        this.formOfEmployment =((Double) values[4]).intValue();
+        this.timeOfEntry = (Date) values[5];
+        this.departmentId = values[6].toString();
+    }
 
     @ManyToMany
     @JsonIgnore

@@ -11,6 +11,8 @@ import com.hrm.entity.system.response.ProfileResult;
 import com.hrm.entity.system.response.UserResult;
 import com.hrm.system.feign.DepartmentFeign;
 import com.hrm.system.service.UserService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,6 +22,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -69,6 +72,56 @@ public class UserController extends BaseController {
         userService.save(user);
         return Result.SUCCESS();
     }
+    /**
+     * 批量添加用户-导入
+     */
+    @PostMapping(value = "/user/import")
+    public Result addImport(@RequestParam("file")MultipartFile file) throws Exception {
+        Workbook wb = new XSSFWorkbook(file.getInputStream());
+        Sheet sheet = wb.getSheetAt(0);
+        List<User> list = new ArrayList<>();
+        System.out.println(sheet.getLastRowNum());
+        for (int rowNum = 1; rowNum<= sheet.getLastRowNum() ;rowNum ++) {
+            Row row = sheet.getRow(rowNum);
+            Object [] values = new Object[row.getLastCellNum()];
+            for(int cellNum=1;cellNum< row.getLastCellNum(); cellNum ++) {
+                Cell cell = row.getCell(cellNum);
+                Object value = getCellValue(cell);
+                values[cellNum] = value;
+            }
+            User user = new User(values);
+            list.add(user);
+        }
+        userService.saveAll(list,companyId,companyName);
+        return Result.SUCCESS();
+    }
+
+    public static Object getCellValue(Cell cell) {
+        CellType cellType = cell.getCellType();
+        Object value = null;
+        switch (cellType) {
+            case STRING:
+                value = cell.getStringCellValue();
+                break;
+            case BOOLEAN:
+                value = cell.getBooleanCellValue();
+                break;
+            case NUMERIC:
+                if(DateUtil.isCellDateFormatted(cell)) {
+                    value = cell.getDateCellValue();
+                }else{
+                    value = cell.getNumericCellValue();
+                }
+                break;
+            case FORMULA:
+                value = cell.getCellFormula();
+                break;
+            default:
+                break;
+        }
+        return value;
+    }
+
     /**
      * 修改用户信息
      */
