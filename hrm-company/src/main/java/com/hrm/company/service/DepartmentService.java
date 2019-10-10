@@ -67,4 +67,8 @@ public class DepartmentService extends BaseService {
     public List<Department> findAll(String companyId) {
         return departmentDao.findAll(getSpec(companyId));
     }
+
+    public Department findByCode(String code, String companyId) {
+        return departmentDao.findByCodeAndCompanyId(code,companyId);
+    }
 }

@@ -69,6 +69,14 @@ public class DepartmentController extends BaseController {
         return new Result(ResultCode.SUCCESS,department);
     }
     /**
+     * 根据部门编号查询
+     */
+    @GetMapping(value = "/departments/search")
+    public Department findByCode(@RequestParam("code")String code,@RequestParam("companyId") String companyId){
+        Department department = departmentService.findByCode(code,companyId);
+        return department;
+    }
+    /**
      * 组织架构列表
      */
     @GetMapping(value = "/departments")

@@ -1,9 +1,11 @@
 package com.hrm.system.feign;
 
 import com.hrm.common.entity.Result;
+import com.hrm.entity.company.Department;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * <p>
@@ -19,5 +21,8 @@ public interface DepartmentFeign {
 
     @GetMapping(value = "/company/departments/{id}")
     Result findById(@PathVariable(name = "id") String id);
+
+    @GetMapping(value = "/company/departments/search")
+    Department findByCode(@RequestParam("code")String code, @RequestParam("companyId") String companyId);
 
 }

@@ -3,10 +3,12 @@ package com.hrm.system.service;
 
 import com.hrm.common.service.BaseService;
 import com.hrm.common.utils.IdWorker;
+import com.hrm.entity.company.Department;
 import com.hrm.entity.system.Role;
 import com.hrm.entity.system.User;
 import com.hrm.system.dao.RoleDao;
 import com.hrm.system.dao.UserDao;
+import com.hrm.system.feign.DepartmentFeign;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +44,9 @@ public class UserService extends BaseService {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private DepartmentFeign departmentFeign;
+
     /**
      * 添加用户
      */
@@ -65,6 +70,11 @@ public class UserService extends BaseService {
             user.setInServiceStatus(1);
             user.setEnableState(1);
             user.setLevel("user");
+            Department department = departmentFeign.findByCode(user.getDepartmentId(), companyId);
+            if(department!=null){
+                user.setDepartmentId(department.getId());
+                user.setDepartmentName(department.getName());
+            }
             userDao.save(user);
         }
     }
