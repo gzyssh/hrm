@@ -208,7 +208,7 @@ public class EmployeeController extends BaseController {
      * 人事报表导出
      */
     @GetMapping("/export/{month}")
-    public Result export(@PathVariable String month) throws Exception {
+    public void export(@PathVariable String month) throws Exception {
         //获取报表数据
         List<EmployeeReportResult> list=userCompanyPersonalService.findByReport(companyId,month);
         //构造Excel--》创造工作簿
@@ -272,6 +272,5 @@ public class EmployeeController extends BaseController {
         ByteArrayOutputStream bo=new ByteArrayOutputStream();
         wb.write(bo);
         new DownloadUtils().download(bo,response,month+"人事报表.xlsx");
-        return new Result(ResultCode.SUCCESS);
     }
 }
