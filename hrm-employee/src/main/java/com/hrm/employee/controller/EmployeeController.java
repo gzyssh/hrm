@@ -271,6 +271,6 @@ public class EmployeeController extends BaseController {
         //完成下载
         ByteArrayOutputStream bo=new ByteArrayOutputStream();
         wb.write(bo);
-        new DownloadUtils().download(bo,response,month+"人事报表.xlsx");
+        new DownloadUtils().download(bo,request,response,month+"人事报表.xlsx");
     }
 }
