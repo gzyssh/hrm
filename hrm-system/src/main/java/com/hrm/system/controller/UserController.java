@@ -5,6 +5,7 @@ import com.hrm.common.controller.BaseController;
 import com.hrm.common.entity.PageResult;
 import com.hrm.common.entity.Result;
 import com.hrm.common.entity.ResultCode;
+import com.hrm.common.utils.ExcelImportUtil;
 import com.hrm.entity.system.User;
 import com.hrm.entity.system.UserSimpleResult;
 import com.hrm.entity.system.response.ProfileResult;
@@ -77,23 +78,10 @@ public class UserController extends BaseController {
      */
     @PostMapping(value = "/user/import")
     public Result addImport(@RequestParam("file")MultipartFile file) throws Exception {
-        Workbook wb = new XSSFWorkbook(file.getInputStream());
-        Sheet sheet = wb.getSheetAt(0);
-        List<User> list = new ArrayList<>();
-        System.out.println(sheet.getLastRowNum());
-        for (int rowNum = 1; rowNum<= sheet.getLastRowNum() ;rowNum ++) {
-            Row row = sheet.getRow(rowNum);
-            Object [] values = new Object[row.getLastCellNum()];
-            for(int cellNum=1;cellNum< row.getLastCellNum(); cellNum ++) {
-                Cell cell = row.getCell(cellNum);
-                Object value = getCellValue(cell);
-                values[cellNum] = value;
-            }
-            User user = new User(values);
-            list.add(user);
-        }
-        userService.saveAll(list,companyId,companyName);
-        return Result.SUCCESS();
+		List list = new ExcelImportUtil(User.class).readExcel(file.getInputStream(), 1, 1);
+		//批量保存用户
+		userService.saveAll(list,companyId,companyName);
+		return Result.SUCCESS();
     }
 
     public static Object getCellValue(Cell cell) {
