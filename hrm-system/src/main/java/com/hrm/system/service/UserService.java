@@ -9,6 +9,7 @@ import com.hrm.entity.system.User;
 import com.hrm.system.dao.RoleDao;
 import com.hrm.system.dao.UserDao;
 import com.hrm.system.feign.DepartmentFeign;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -172,5 +174,16 @@ public class UserService extends BaseService {
 
     public User findByMobile(String mobile) {
         return userDao.findByMobile(mobile);
+    }
+
+    public String uploadImg(String id, MultipartFile file) throws Exception {
+        User user = userDao.findById(id).get();
+        //使用DataURL的形式存储图片（对图片byte数组进行base64编码）
+        String encode="data:img/png;base64,"+ Base64.encode(file.getBytes());
+        if(user!=null){
+            user.setStaffPhoto(encode);
+            userDao.save(user);
+        }
+        return encode;
     }
 }

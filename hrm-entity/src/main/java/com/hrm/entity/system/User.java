@@ -110,6 +110,8 @@ public class User implements Serializable {
      */
     private String level;
 
+    private String staffPhoto;
+
     public User(Object [] values) {
         this.username = values[1].toString();
         this.mobile = values[2].toString();

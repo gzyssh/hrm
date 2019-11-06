@@ -13,7 +13,6 @@ import com.hrm.entity.system.response.UserResult;
 import com.hrm.system.feign.DepartmentFeign;
 import com.hrm.system.service.UserService;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,6 +48,15 @@ public class UserController extends BaseController {
     @Autowired
     private DepartmentFeign departmentFeign;
 
+
+    /**
+     * 文件上传
+     */
+    @RequestMapping(value = "/user/upload/{id}")
+    public Result upload(@PathVariable String id,@RequestParam("file") MultipartFile file) throws Exception {
+        String imgUrl=userService.uploadImg(id,file);
+        return new Result(ResultCode.SUCCESS,imgUrl);
+    }
 
     /**
      * 分配角色
